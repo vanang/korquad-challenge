@@ -94,7 +94,10 @@ def evaluate(args, model, eval_examples, eval_features):
         dataset = dataset_json['data']
     with open(os.path.join(args.output_dir, "predictions.json")) as prediction_file:
         predictions = json.load(prediction_file)
-    logger.info(json.dumps(korquad_eval(dataset, predictions)))
+    _eval = korquad_eval(dataset, predictions)
+    logger.info(json.dumps(_eval))
+
+    return _eval
 
 
 def load_and_cache_examples(args, tokenizer):
@@ -117,7 +120,7 @@ def main():
     parser.add_argument("--checkpoint", default='output/korquad_3.bin',
                         type=str,
                         help="checkpoint")
-    parser.add_argument("--output_dir", default='debug', type=str,
+    parser.add_argument("--output_dir", default='output', type=str,
                         help="The output directory where the model checkpoints and predictions will be written.")
 
     ## Other parameters
@@ -170,7 +173,7 @@ def main():
     # Set seed
     set_seed(args)
 
-    tokenizer = BertTokenizer(vocab_file='data/wiki_vocab_32k.txt', do_basic_tokenize=True, max_len=args.max_seq_length)
+    tokenizer = BertTokenizer(vocab_file='data/ko_vocab_32k.txt', do_basic_tokenize=True, max_len=args.max_seq_length)
     config = Config.from_json_file(args.config_name)
     model = QuestionAnswering(config)
     model.load_state_dict(torch.load(args.checkpoint))
@@ -184,7 +187,16 @@ def main():
 
     # Evaluate
     examples, features = load_and_cache_examples(args, tokenizer)
-    evaluate(args, model, examples, features)
+    eval = evaluate(args, model, examples, features)
+
+    result = {
+        'checkpoint': str(args.checkpoint).split('/')[1],
+        'parameters': str(args),
+        'result': eval
+    }
+
+    with open(os.path.join(args.output_dir, 'evaluation.txt'), 'w') as eval_file:
+        eval_file.write(json.dumps(result))
 
 
 if __name__ == "__main__":

@@ -280,28 +280,28 @@ def convert_examples_to_features(examples, tokenizer, max_seq_length,
                 start_position = 0
                 end_position = 0
             if example_index < 20:
-                logger.info("*** Example ***")
-                logger.info("unique_id: %s" % (unique_id))
-                logger.info("example_index: %s" % (example_index))
-                logger.info("doc_span_index: %s" % (doc_span_index))
-                logger.info("tokens: %s" % " ".join(tokens))
-                logger.info("token_to_orig_map: %s" % " ".join([
+                logger.debug("*** Example ***")
+                logger.debug("unique_id: %s" % (unique_id))
+                logger.debug("example_index: %s" % (example_index))
+                logger.debug("doc_span_index: %s" % (doc_span_index))
+                logger.debug("tokens: %s" % " ".join(tokens))
+                logger.debug("token_to_orig_map: %s" % " ".join([
                     "%d:%d" % (x, y) for (x, y) in token_to_orig_map.items()]))
-                logger.info("token_is_max_context: %s" % " ".join([
+                logger.debug("token_is_max_context: %s" % " ".join([
                     "%d:%s" % (x, y) for (x, y) in token_is_max_context.items()
                 ]))
-                logger.info("input_ids: %s" % " ".join([str(x) for x in input_ids]))
-                logger.info(
+                logger.debug("input_ids: %s" % " ".join([str(x) for x in input_ids]))
+                logger.debug(
                     "input_mask: %s" % " ".join([str(x) for x in input_mask]))
-                logger.info(
+                logger.debug(
                     "segment_ids: %s" % " ".join([str(x) for x in segment_ids]))
                 if is_training and example.is_impossible:
-                    logger.info("impossible example")
+                    logger.debug("impossible example")
                 if is_training and not example.is_impossible:
                     answer_text = " ".join(tokens[start_position:(end_position + 1)])
-                    logger.info("start_position: %d" % (start_position))
-                    logger.info("end_position: %d" % (end_position))
-                    logger.info(
+                    logger.debug("start_position: %d" % (start_position))
+                    logger.debug("end_position: %d" % (end_position))
+                    logger.debug(
                         "answer: %s" % (answer_text))
 
             features.append(

@@ -117,6 +117,12 @@ def main():
     model.bert.load_state_dict(torch.load(args.checkpoint))
     num_params = count_parameters(model)
     logger.info("Total Parameter: %d" % num_params)
+    logger.info("Hyper-parameters: %s" % str(args))
+    paramfile_path = os.path.join(args.output_dir, 'hyperparameters.txt')
+    with open(paramfile_path, "w") as paramfile:
+        logger.info("writing hyperparameters at",paramfile_path)
+        paramfile.write("%s" % str(args))
+
     model.to(device)
 
     cached_train_features_file = args.train_file + '_{0}_{1}_{2}'.format(str(args.max_seq_length), str(args.doc_stride),
@@ -221,6 +227,7 @@ def main():
         else:
             torch.save(model.state_dict(), output_model_file)
         epoch += 1
+
 
 
 if __name__ == "__main__":
