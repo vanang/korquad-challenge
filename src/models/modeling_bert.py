@@ -337,6 +337,7 @@ class QuestionAnswering(nn.Module):
         self.bert = Model(config)
         # TODO check with Google if it's normal there is no dropout on the token classifier of SQuAD in the TF version
         # self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        self.dropout = nn.Dropout(0.2)
         self.qa_outputs = Linear(config.hidden_size, 2)
 
     def forward(self, input_ids, token_type_ids=None, attention_mask=None, start_positions=None, end_positions=None):
