@@ -16,8 +16,8 @@ from models.modeling_bert import QuestionAnswering, Config
 from utils.tokenization import BertTokenizer
 from utils.korquad_utils import read_squad_examples, convert_examples_to_features, write_predictions, RawResult
 
-MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "submit_output")
-CHK_PATH = os.path.join(MODEL_PATH, "korquad_3.bin")
+MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+CHK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "korquad_3.bin")
 CONFIG_PATH = os.path.join(MODEL_PATH, "bert_small.json")
 VOCAB_PATH = os.path.join(MODEL_PATH, "ko_vocab_32k.txt")
 
@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 def main(input, output):
     max_seq_length = 512
-    doc_stride = 86 
+    doc_stride = 84
     max_query_length = 64
     batch_size = 16
     n_best_size = 128
@@ -37,8 +37,8 @@ def main(input, output):
     seed = 42
     fp16 = False
 
-    # device = torch.device("cpu")
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu")
+    # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     n_gpu = torch.cuda.device_count()
     logger.info("device: {} n_gpu: {}".format(device, n_gpu))
@@ -97,7 +97,7 @@ def main(input, output):
             all_results.append(RawResult(unique_id=unique_id,
                                          start_logits=start_logits,
                                          end_logits=end_logits))
-    output_nbest_file = os.path.join(MODEL_PATH, "nbest_predictions.json")
+    output_nbest_file = os.path.join("nbest_predictions.json")
     write_predictions(eval_examples, eval_features, all_results,
                         n_best_size, max_answer_length,
                         False, output, output_nbest_file,
