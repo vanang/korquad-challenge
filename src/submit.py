@@ -5,9 +5,7 @@ import logging
 import os
 import random
 import sys
-
-import numpy as np
-import torch
+import numpy as np import torch
 
 from torch.utils.data import (DataLoader, SequentialSampler, TensorDataset)
 from tqdm import tqdm
@@ -17,7 +15,7 @@ from utils.tokenization import BertTokenizer
 from utils.korquad_utils import read_squad_examples, convert_examples_to_features, write_predictions, RawResult
 
 MODEL_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
-CHK_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "korquad_3.bin")
+CHK_PATH = os.path.join(MODEL_PATH, "korquad_3.bin")
 CONFIG_PATH = os.path.join(MODEL_PATH, "bert_small.json")
 VOCAB_PATH = os.path.join(MODEL_PATH, "ko_vocab_32k.txt")
 
@@ -32,7 +30,7 @@ def main(input, output):
     doc_stride = 84
     max_query_length = 64
     batch_size = 16
-    n_best_size = 128
+    n_best_size = 20
     max_answer_length = 30
     seed = 42
     fp16 = False
@@ -97,7 +95,7 @@ def main(input, output):
             all_results.append(RawResult(unique_id=unique_id,
                                          start_logits=start_logits,
                                          end_logits=end_logits))
-    output_nbest_file = os.path.join("nbest_predictions.json")
+    output_nbest_file = os.path.join(MODEL_PATH, "nbest_predictions.json")
     write_predictions(eval_examples, eval_features, all_results,
                         n_best_size, max_answer_length,
                         False, output, output_nbest_file,
