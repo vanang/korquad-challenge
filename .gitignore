@@ -142,3 +142,13 @@ bert_small
 bert_small.zip
 
 .idea
+
+#bert model checkpoints
+**/output*/*.bin
+**/*_ckpt.bin
+
+#nohup output
+**/nohup.out
+
+#feature cache
+src/data/KorQuAD_v1.0_train.json_*
